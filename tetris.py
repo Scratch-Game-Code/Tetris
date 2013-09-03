@@ -229,10 +229,12 @@ def main():
     pygame.init()
     size = width, height = 760, 760
     screen = pygame.display.set_mode((size))
-    bg = pygame.image.load(os.getcwd() + '/background.png')
+    bg = pygame.image.load(os.getcwd() + '/images/background.png')
     bg.convert_alpha()
-    brd = pygame.image.load(os.getcwd() + '/board.png')
+    brd = pygame.image.load(os.getcwd() + '/images/board.png')
     brd.convert_alpha()
+    gameover = pygame.image.load(os.getcwd() + '/images/game_over.png')
+    gameover.convert_alpha()
     screen.blit(bg, (0, 0))
     screen.blit(brd, (40, 20)) 
     shapes = {'L_left':[create_L_left, 4], 
@@ -336,7 +338,12 @@ def main():
         cur_brd.append(blocks)
         pygame.display.flip()
         while game_over:
-            pass
+            screen.blit(gameover, (75, 220))
+            pygame.display.flip()
+            for event in pygame.event.get():
+                if (event.type == pygame.KEYDOWN and
+                    event.key == pygame.K_ESCAPE):
+                        sys.exit()
 
 if __name__ == '__main__':
     main()
