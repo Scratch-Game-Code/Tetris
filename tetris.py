@@ -235,8 +235,22 @@ def main():
     brd.convert_alpha()
     gameover = pygame.image.load(os.getcwd() + '/images/game_over.png')
     gameover.convert_alpha()
+    stats = pygame.image.load(os.getcwd() + '/images/score_board.png')
+    stats.convert_alpha()
+    font_file = open(os.getcwd() + '/font/DS-DIGIB.TTF', 'r')
+    font = pygame.font.Font(font_file, 24)
+    score = '00000'
+    lines = '00000'
+    level = '001'
+    score_text = font.render('Score: %s' % score, True, (0, 255, 0))
+    lines_text = font.render('Lines: %s' % lines, True, (0, 255, 0))
+    level_text = font.render('Level: %s' % level, True, (0, 255, 0))
     screen.blit(bg, (0, 0))
     screen.blit(brd, (40, 20)) 
+    screen.blit(stats, (540, 20))
+    screen.blit(score_text, (555, 35))
+    screen.blit(lines_text, (555, 95))
+    screen.blit(level_text, (555, 155))
     shapes = {'L_left':[create_L_left, 4], 
               'L_right':[create_L_right, 4],
               'S_left':[create_S_left, 4],              
@@ -244,12 +258,27 @@ def main():
               'Long':[create_Long, 4], 
               'T':[create_T, 4], 
               'Box':[create_Box, 1]} 
+    levels = {1:[0, 2], 2:[0, 3], 3:[0, 4], 4:[0, 5]}
     game_over = False
     cur_brd = list()
     grid = set_grid()
     while not game_over:
         block = random.choice(shapes.keys())
-        speed = [0, 2]
+        if int(lines) >= 10:
+            level = str(int(level) + 1)
+            level = ('0' * (3 - len(level))) + level
+            level_text = font.render('Level: %s' % level, True, (0, 255, 0))
+            lines = '00000'
+            lines_text = font.render('Lines: %s' % lines, True, (0, 255, 0))
+            cur_brd = list()
+            screen.blit(bg, (0, 0))
+            screen.blit(brd, (40, 20))
+            screen.blit(stats, (540, 20))
+            screen.blit(score_text, (555, 35))
+            screen.blit(lines_text, (555, 95))
+            screen.blit(level_text, (555, 155))
+            pygame.display.flip()
+        speed = levels[int(level)]
         shape_block = shapes[block][0]
         blocks = shape_block()
         positions = itertools.cycle(range(shapes[block][1]))
@@ -259,8 +288,14 @@ def main():
             for blk in node:
                 row_count[node[blk][1]] += 1
         if any(row_count[i] == 12 for i in row_count):   
-            complete_row = [i for i in row_count if row_count[i] == 12]         
-            break_speed = [0, 4]
+            complete_row = [i for i in row_count if row_count[i] == 12]      
+            lines = str(int(lines) + len(complete_row))
+            lines = ('0' * (5 - len(lines))) + lines
+            lines_text = font.render('Lines: %s' % lines, True, (0, 255, 0)) 
+            score = str(int(score) + (len(complete_row) * 50))
+            score = ('0' * (5 - len(score))) + score
+            score_text = font.render('Score: %s' % score, True, (0, 255, 0))
+            break_speed = [0, speed[1] + 2]
             for node in cur_brd:
                 for blk in node:
                     if any(node[blk][1] == i for i in complete_row):
@@ -275,6 +310,10 @@ def main():
                     blk.move_ip(break_speed) 
                 screen.blit(bg, (0, 0))
                 screen.blit(brd, (40, 20))
+                screen.blit(stats, (540, 20))
+                screen.blit(score_text, (555, 35))
+                screen.blit(lines_text, (555, 95))
+                screen.blit(level_text, (555, 155))
                 for node in cur_brd:
                     for blk in node:
                         screen.blit(blk, node[blk])
@@ -291,6 +330,10 @@ def main():
         while all(blocks[i].bottom < 740 for i in blocks):
             screen.blit(bg, (0, 0))
             screen.blit(brd, (40, 20))
+            screen.blit(stats, (540, 20))
+            screen.blit(score_text, (555, 35))
+            screen.blit(lines_text, (555, 95))
+            screen.blit(level_text, (555, 155))
             for blk in blocks:
                 screen.blit(blk, blocks[blk])
             for node in cur_brd:
@@ -320,7 +363,6 @@ def main():
                     clear_on_right(cur_brd, blocks)):
                     for blk in blocks:
                         blocks[blk][0] += 40
-
                 if (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LEFT and 
                     all(blocks[i].left > 40 for i in blocks) and
@@ -329,6 +371,7 @@ def main():
                         blocks[blk][0] -= 40
                 if (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_ESCAPE):
+                    font_file.close()
                     sys.exit()
             if speed[1]:
                 for i in blocks:
