@@ -182,14 +182,14 @@ class GameScreen(object):
             self.screen.blit(blk, blocks[blk])
         self.update_board(board)
         self.screen.blit(self.bg, (0, 0))
+        self.update_score([])
     
     def update_board(self, board):
         for node in board:
             surface = node.keys()[0]
             self.screen.blit(surface, node[surface])
         
-	    
-    def complete_line(self, line_amnt, board, speed):
+    def update_score(self, line_amnt):
         self.lines = str(int(self.lines) + len(line_amnt))
         self.lines = ('0' * (5 - len(self.lines))) + self.lines
         lines_text = self.font.render('Lines: %s' % 
@@ -197,8 +197,17 @@ class GameScreen(object):
         self.score = str(int(self.score) + (len(line_amnt) * 50))
         self.score = ('0' * (5 - len(self.score))) + self.score
         score_text = self.font.render('Score: %s' % 
-                                      self.score, True, (0, 255, 0))
-
+                                      self.score, True, (0, 255, 0))      
+        level_text = self.font.render('Level: %s' %
+                                       self.level, True, (0, 255, 0))
+        self.screen.blit(self.stats, (540, 20))
+        self.screen.blit(score_text, (555, 35))
+        self.screen.blit(lines_text, (555, 95))
+        self.screen.blit(level_text, (555, 155))
+        pygame.display.flip()        
+  
+    def complete_line(self, line_amnt, board, speed):
+        self.update_score(line_amnt)
         break_speed = [0, speed]  # drop speed is affecting max level 
         new_brd = list()
         for node in board:
@@ -243,7 +252,7 @@ class Tetris(object):
                             'T':[create_T, 4], 
                             'Box':[create_Box, 1]} 
                             
-        self.levels = {1:[0, 5.0], 2:[0, 2.0], 3:[0, 3.0], 
+        self.levels = {1:[0, 1.0], 2:[0, 2.0], 3:[0, 3.0], 
                        4:[0, 4.0], 5:[0, 5.0], 6:[0, 6.0]}
 
         self.shifts =  {'L_left':{0:[[0, 40], [-40, 0], [0, -40], [40, -80]],  
@@ -386,6 +395,9 @@ def main():
             if tetris.speed[1]:
                 for i in tetris.blocks:
                     tetris.blocks[i].move_ip(tetris.speed)
+                    if tetris.blocks[i].bottom > 740:
+                        tetris.blocks[i].bottom = 740
+                    # this semi works
             else:
                 break
             pygame.display.flip()
