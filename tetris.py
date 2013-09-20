@@ -193,6 +193,11 @@ class GameScreen(object):
         if line_amnt:
             self.lines = str(int(self.lines) + len(line_amnt))
             self.score = str(int(self.score) + (len(line_amnt) * 50))
+            if int(self.lines) == 6:
+                self.level = str(int(self.level) + 1)
+                self.level = ('0' * (3 - len(self.level))) + self.level
+                self.lines = '00000'
+                self.speed += 1
         self.lines = ('0' * (5 - len(self.lines))) + self.lines
         lines_text = self.font.render('Lines: %s' % 
                                       self.lines, True, (0, 255, 0)) 
@@ -208,6 +213,7 @@ class GameScreen(object):
         pygame.display.flip()        
   
     def complete_line(self, line_amnt, board, speed):
+        self.speed = speed
         self.update_score(line_amnt)
         break_speed = [0, speed]  # drop speed is affecting max level 
         new_brd = list()
@@ -220,13 +226,12 @@ class GameScreen(object):
         board = new_brd
         pygame.display.flip()
         time.sleep(0.1)
-
         displaced = list()
         for node in board:
             surface = node.keys()[0]
             if node[surface][1] < max(line_amnt):
                 displaced.append(node[surface])
-        while all(blk.bottom < 740 for blk in displaced):
+        while all(blk.bottom < 740 for blk in displaced): #XXX bug with drop
             for blk in displaced:            
                 blk.move_ip(break_speed) 
             for node in board:
@@ -237,9 +242,9 @@ class GameScreen(object):
                 if any(blk.left == node[surface].left and
                        blk.bottom == node[surface].top and
                        node[surface] not in displaced for blk in displaced): 
-                    return board
+                    return board, (self.speed - 1)
             pygame.display.flip()
-        return board
+        return board, (self.speed - 1)
 
 class Tetris(object):
 
@@ -253,8 +258,8 @@ class Tetris(object):
                             'T':[create_T, 4], 
                             'Box':[create_Box, 1]} 
                             
-        self.levels = {1:[0, 2.0], 2:[0, 2.0], 3:[0, 3.0], 
-                       4:[0, 4.0], 5:[0, 5.0], 6:[0, 6.0]}
+        self.levels = {1:[0, 2.0], 2:[0, 3.0], 3:[0, 4.0], 
+                       4:[0, 5.0], 5:[0, 6.0], 6:[0, 7.0]}
 
         self.shifts =  {'L_left':{0:[[0, 40], [-40, 0], [0, -40], [40, -80]],  
                                   1:[[40, 40], [0, 80], [-40, 40], [-80, 0]], 
@@ -398,33 +403,20 @@ def main():
                     tetris.blocks[i].move_ip(tetris.speed)
                     if tetris.blocks[i].bottom > 740:
                         tetris.blocks[i].bottom = 740
-                    # this semi works
             else:
                 break
-            pygame.display.flip()
 
         for blk in tetris.blocks:
             cur_brd.append({blk:tetris.blocks[blk]})
         row_count = collections.Counter()
         for node in cur_brd:
-            for blk in node:
-                row_count[node[blk][1]] += 1        
+            surface = node.keys()[0]
+            row_count[node[surface][1]] += 1
 
         if any(row_count[i] == 12 for i in row_count):   
             complete_row = [i for i in row_count if row_count[i] == 12]      
-            cur_brd = game.complete_line(complete_row, cur_brd, tetris.speed[1])
+            cur_brd, level = game.complete_line(complete_row, cur_brd, tetris.speed[1])
 
-#        if int(lines) >= 5:
-#            level = str(int(level) + 1)
-#            level = ('0' * (3 - len(level))) + level
-#            level_text = font.render('Level: %s' % level, True, (0, 255, 0))
-#            lines = '00000'
-#            lines_text = font.render('Lines: %s' % lines, True, (0, 255, 0))
-#            cur_brd = list()
-#        screen.blit(stats, (540, 20))
-#        screen.blit(score_text, (555, 35))
-#        screen.blit(lines_text, (555, 95))
-#        screen.blit(level_text, (555, 155))
         while game_over:
             screen.blit(gameover, (75, 220))
             pygame.display.flip()
