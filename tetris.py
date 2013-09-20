@@ -190,11 +190,12 @@ class GameScreen(object):
             self.screen.blit(surface, node[surface])
         
     def update_score(self, line_amnt=None):
-        self.lines = str(int(self.lines) + len(line_amnt))
+        if line_amnt:
+            self.lines = str(int(self.lines) + len(line_amnt))
+            self.score = str(int(self.score) + (len(line_amnt) * 50))
         self.lines = ('0' * (5 - len(self.lines))) + self.lines
         lines_text = self.font.render('Lines: %s' % 
                                       self.lines, True, (0, 255, 0)) 
-        self.score = str(int(self.score) + (len(line_amnt) * 50))
         self.score = ('0' * (5 - len(self.score))) + self.score
         score_text = self.font.render('Score: %s' % 
                                       self.score, True, (0, 255, 0))      
@@ -252,7 +253,7 @@ class Tetris(object):
                             'T':[create_T, 4], 
                             'Box':[create_Box, 1]} 
                             
-        self.levels = {1:[0, 1.0], 2:[0, 2.0], 3:[0, 3.0], 
+        self.levels = {1:[0, 2.0], 2:[0, 2.0], 3:[0, 3.0], 
                        4:[0, 4.0], 5:[0, 5.0], 6:[0, 6.0]}
 
         self.shifts =  {'L_left':{0:[[0, 40], [-40, 0], [0, -40], [40, -80]],  
