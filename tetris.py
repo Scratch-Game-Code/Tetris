@@ -182,14 +182,14 @@ class GameScreen(object):
             self.screen.blit(blk, blocks[blk])
         self.update_board(board)
         self.screen.blit(self.bg, (0, 0))
-        self.update_score([])
+        self.update_score()
     
     def update_board(self, board):
         for node in board:
             surface = node.keys()[0]
             self.screen.blit(surface, node[surface])
         
-    def update_score(self, line_amnt):
+    def update_score(self, line_amnt=None):
         self.lines = str(int(self.lines) + len(line_amnt))
         self.lines = ('0' * (5 - len(self.lines))) + self.lines
         lines_text = self.font.render('Lines: %s' % 
