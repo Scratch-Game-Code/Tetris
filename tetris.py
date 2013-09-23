@@ -170,6 +170,7 @@ class GameScreen(object):
         self.score = '00000'
         self.lines = '00000'
         self.level = '001'
+        self.line_cnt = 0
         score_text = self.font.render('Score: %s' % 
                                        self.score, True, (0, 255, 0))
         lines_text = self.font.render('Lines: %s' % 
@@ -190,22 +191,22 @@ class GameScreen(object):
             self.screen.blit(blk, blocks[blk])
         self.update_board(board)
         self.screen.blit(self.bg, (0, 0))
-        self.update_score()
+        self.update_score(0)
     
     def update_board(self, board):
         for node in board:
             surface = node.keys()[0]
             self.screen.blit(surface, node[surface])
         
-    def update_score(self, line_amnt=None):
+    def update_score(self, line_amnt):
         if line_amnt:
-            self.lines = str(int(self.lines) + len(line_amnt))
-            self.score = str(int(self.score) + (len(line_amnt) * 50))
-            if int(self.lines) == 6:
+            self.line_cnt += line_amnt
+            self.lines = str(int(self.lines) + line_amnt)
+            self.score = str(int(self.score) + (line_amnt * 50))
+            if self.line_cnt >= 5:
+                self.line_cnt = 0
                 self.level = str(int(self.level) + 1)
                 self.level = ('0' * (3 - len(self.level))) + self.level
-                self.lines = '00000'
-                self.speed += 1
         self.lines = ('0' * (5 - len(self.lines))) + self.lines
         lines_text = self.font.render('Lines: %s' % 
                                       self.lines, True, (0, 255, 0)) 
@@ -220,10 +221,8 @@ class GameScreen(object):
         self.screen.blit(level_text, (555, 155))
         pygame.display.flip()        
   
-    def complete_line(self, line_amnt, board, speed):
-        self.speed = speed
-        self.update_score(line_amnt)
-        break_speed = [0, speed]  # drop speed is affecting max level 
+    def complete_line(self, line_amnt, board):
+        self.update_score(len(line_amnt))
         new_brd = list()
         for node in board:
             surface = node.keys()[0]
@@ -239,24 +238,36 @@ class GameScreen(object):
             surface = node.keys()[0]
             if node[surface][1] < max(line_amnt):
                 displaced.append(node[surface])
-        while all(blk.bottom < 740 for blk in displaced): #XXX bug with drop
+        while all(blk.bottom < 740 for blk in displaced):
             self.screen.blit(self.brd, (40, 20))
             for blk in displaced:            
-                blk.move_ip(break_speed) 
+                blk.move_ip([0, 2.0]) 
             self.update_board(board)
             for node in board:
                 surface = node.keys()[0]
                 if any(blk.left == node[surface].left and
                        blk.bottom == node[surface].top and
                        node[surface] not in displaced for blk in displaced): 
-                    return board, (self.speed - 1)
+                    return board
             pygame.display.flip()
-        return board, (self.speed - 1)
+        return board
+
+    @property   
+    def over(self):
+        while True:
+            self.screen.blit(self.gameover, (75, 220))
+            for event in pygame.event.get():
+                if (event.type == pygame.KEYDOWN and
+                    event.key == pygame.K_ESCAPE):
+                        self.font_file.close()
+                        sys.exit()
+            pygame.display.flip()
 
 class Tetris(object):
 
     def __init__(self, level):
         self.level = level
+        self.gameover = False
         self.block_types = {'L_left':[create_L_left, 4], 
                             'L_right':[create_L_right, 4],
                             'S_left':[create_S_left, 4],              
@@ -265,8 +276,8 @@ class Tetris(object):
                             'T':[create_T, 4], 
                             'Box':[create_Box, 1]} 
                             
-        self.levels = {1:[0, 2.0], 2:[0, 3.0], 3:[0, 4.0], 
-                       4:[0, 5.0], 5:[0, 6.0], 6:[0, 7.0]}
+        self.levels = {1:[0, 2.0], 2:[0, 2.0], 3:[0, 2.5], 
+                       4:[0, 4.0], 5:[0, 5.0], 6:[0, 10.0]}
 
         self.shifts =  {'L_left':{0:[[0, 40], [-40, 0], [0, -40], [40, -80]],  
                                   1:[[40, 40], [0, 80], [-40, 40], [-80, 0]], 
@@ -327,16 +338,14 @@ class Tetris(object):
             self.blocks[i].left += adj_brd
     
     def overflow_check(self, board):
-        game_over = False
         for node in board:
             for blk in node:
                 if any(self.blocks[v].left == node[blk].left and 
                        self.blocks[v].bottom == node[blk].top 
                        for v in self.blocks):
                     for b in self.blocks:
-                        if self.blocks[b].top == 20:
-                            game_over = True
-                            self.speed = [0, 0]
+                        if self.blocks[b].top <= 20:
+                            self.gameover = True
                     self.speed = [0, 0]
 
     def clear_on_left(self, board):
@@ -365,16 +374,12 @@ class Tetris(object):
                     return False
         return True
         
-    def update(self): 
-        pass
-        
            
 def main():
-    game_over = False
     cur_brd = list()
-    level = 1
     game = GameScreen()
-    while not game_over:
+    while True:
+        level = int(game.level)
         tetris = Tetris(level)
         tetris.new_block()
         while all(tetris.blocks[i].bottom < 740 for i in tetris.blocks):
@@ -408,24 +413,16 @@ def main():
             if tetris.speed[1]:
                 for i in tetris.blocks:
                     tetris.blocks[i].move_ip(tetris.speed)
-                    if tetris.blocks[i].bottom > 740:
-                        tetris.blocks[i].bottom = 740
             else:
                 break
-
         for blk in tetris.blocks:
             cur_brd.append({blk:tetris.blocks[blk]})
         rows = row_check(cur_brd)        
         if rows:
-            cur_brd, level = game.complete_line(rows, cur_brd, tetris.speed[1])
+            cur_brd = game.complete_line(rows, cur_brd)
+        if tetris.gameover:
+            game.over
 
-        while game_over:
-            screen.blit(gameover, (75, 220))
-            pygame.display.flip()
-            for event in pygame.event.get():
-                if (event.type == pygame.KEYDOWN and
-                    event.key == pygame.K_ESCAPE):
-                        sys.exit()
 
 if __name__ == '__main__':
     main()
