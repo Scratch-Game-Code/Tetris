@@ -223,8 +223,8 @@ class GameScreen(object):
                 self.screen.blit(self.clear_block, node[surface][:2])
             else:
                 new_brd.append(node)
-        board = new_brd
         pygame.display.flip()
+        board = new_brd
         time.sleep(0.1)
         displaced = list()
         for node in board:
@@ -232,11 +232,10 @@ class GameScreen(object):
             if node[surface][1] < max(line_amnt):
                 displaced.append(node[surface])
         while all(blk.bottom < 740 for blk in displaced): #XXX bug with drop
+            self.screen.blit(self.brd, (40, 20))
             for blk in displaced:            
                 blk.move_ip(break_speed) 
-            for node in board:
-                surface = node.keys()[0]
-                self.screen.blit(surface, node[surface])
+            self.update_board(board)
             for node in board:
                 surface = node.keys()[0]
                 if any(blk.left == node[surface].left and
