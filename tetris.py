@@ -139,6 +139,14 @@ def create_Box():
         coords[0] += 40
     return blocks
 
+def row_check(board):
+    row_count = collections.Counter()
+    for node in board:
+        surface = node.keys()[0]
+        row_count[node[surface][1]] += 1
+    complete_row = [i for i in row_count if row_count[i] == 12]      
+    return complete_row
+
 class GameScreen(object):
     
     def __init__(self):
@@ -407,14 +415,9 @@ def main():
 
         for blk in tetris.blocks:
             cur_brd.append({blk:tetris.blocks[blk]})
-        row_count = collections.Counter()
-        for node in cur_brd:
-            surface = node.keys()[0]
-            row_count[node[surface][1]] += 1
-
-        if any(row_count[i] == 12 for i in row_count):   
-            complete_row = [i for i in row_count if row_count[i] == 12]      
-            cur_brd, level = game.complete_line(complete_row, cur_brd, tetris.speed[1])
+        rows = row_check(cur_brd)        
+        if rows:
+            cur_brd, level = game.complete_line(rows, cur_brd, tetris.speed[1])
 
         while game_over:
             screen.blit(gameover, (75, 220))
