@@ -9,7 +9,7 @@ import itertools
 import collections 
 
 
-def create_L_left():
+def create_L():
     blocks = collections.OrderedDict() 
     coords = [240, 0]
     for i in xrange(2):
@@ -29,7 +29,7 @@ def create_L_left():
         coords[1] += 40
     return blocks
     
-def create_L_right():
+def create_J():
     blocks = collections.OrderedDict()
     coords = [280, 0]
     for i in xrange(2):
@@ -49,7 +49,7 @@ def create_L_right():
         coords[1] += 40
     return blocks
 
-def create_S_left():
+def create_Z():
     blocks = collections.OrderedDict()
     coords = [240, 0]
     for i in xrange(2):
@@ -69,7 +69,7 @@ def create_S_left():
         coords[0] += 40 
     return blocks
 
-def create_S_right():
+def create_S():
     blocks = collections.OrderedDict()
     coords = [240, 0]
     for i in xrange(2):
@@ -89,7 +89,7 @@ def create_S_right():
         coords[0] += 40
     return blocks
 
-def create_Long():
+def create_I():
     blocks = collections.OrderedDict()
     coords = [200, 0]
     for i in xrange(4):
@@ -119,7 +119,7 @@ def create_T():
     blocks[block] = block_rect
     return blocks
 
-def create_Box():
+def create_O():
     blocks = collections.OrderedDict()
     coords = [240, 0]
     for i in xrange(2):
@@ -268,48 +268,48 @@ class Tetris(object):
     def __init__(self, level):
         self.level = level
         self.gameover = False
-        self.block_types = {'L_left':[create_L_left, 4], 
-                            'L_right':[create_L_right, 4],
-                            'S_left':[create_S_left, 4],              
-                            'S_right':[create_S_right, 4], 
-                            'Long':[create_Long, 4], 
+        self.block_types = {'L':[create_L, 4], 
+                            'J':[create_J, 4],
+                            'Z':[create_Z, 4],              
+                            'S':[create_S, 4], 
+                            'I':[create_I, 4], 
                             'T':[create_T, 4], 
-                            'Box':[create_Box, 1]} 
+                            'O':[create_O, 1]} 
                             
         self.levels = {1:[0, 2.0], 2:[0, 2.0], 3:[0, 2.5], 
                        4:[0, 4.0], 5:[0, 5.0], 6:[0, 10.0]}
 
-        self.shifts =  {'L_left':{0:[[0, 40], [-40, 0], [0, -40], [40, -80]],  
-                                  1:[[40, 40], [0, 80], [-40, 40], [-80, 0]], 
-                                  2:[[40, -40], [80, 0], [40, 40], [0, 80]], 
-                                  3:[[-80, 0], [-40, -40], [0, 0], [40, 40]]},  
-                       'L_right':{0:[[-40, 0], [0, 40], [40, 0], [80, -40]], 
-                                  1:[[0, 80], [40, 40], [0, 0], [-40, -40]],
-                                  2:[[80, -40], [40, -80], [0, -40], [-40, 0]],
-                                  3:[[-40, -40], [-80, 0], [-40, 40], [0, 80]]},
-                       'S_left':{0:[[0, 80], [-40, 40], [0, 0], [-40, -40]],
-                                 1:[[80, -40], [40, 0], [0, -40], [-40, 0]],
-                                 2:[[-40, -40], [0, 0], [-40, 40], [0, 80]],
-                                 3:[[-40, 0], [0, -40], [40, 0], [80, -40]]},
-                       'S_right':{0:[[0, 40], [-40, 0], [80, 40], [40, 0]],  
-                                  1:[[0, 0], [-40, 40], [0, -80], [-40, -40]],
-                                  2:[[40, 0], [80, 40], [-40, 0], [0, 40]],
-                                  3:[[-40, -40], [0, -80], [-40, 40], [0, 0]]},
-                       'Long':{0:[[40, 120], [0, 80], [-40, 40], [-80, 0]],
-                               1:[[80, -120], [40, -80], [0, -40], [-40, 0]],
-                               2:[[-80, 0], [-40, 40], [0, 80], [40, 120]],
-                               3:[[-40, 0], [0, -40], [40, -80], [80, -120]]},
-                       'T':{0:[[0, 80], [-40, 40], [-80, 0], [0, 0]],
-                            1:[[80, 0], [40, 40], [0, 80], [0, 0]],
-                            2:[[0, -80], [40, -40], [80, 0], [0, 0]],
-                            3:[[-80, 0], [-40, -40], [0, -80], [0, 0]]},
-                       'Box':{0:[[0, 0], [0, 0], [0, 0], [0, 0]]}
+        self.shifts =  {'L':{0:[[0, 40], [-40, 0], [0, -40], [40, -80]],  
+                             1:[[40, 40], [0, 80], [-40, 40], [-80, 0]], 
+                             2:[[40, -40], [80, 0], [40, 40], [0, 80]], 
+                             3:[[-80, 0], [-40, -40], [0, 0], [40, 40]]},  
+                        'J':{0:[[-40, 0], [0, 40], [40, 0], [80, -40]], 
+                             1:[[0, 80], [40, 40], [0, 0], [-40, -40]],
+                             2:[[80, -40], [40, -80], [0, -40], [-40, 0]],
+                             3:[[-40, -40], [-80, 0], [-40, 40], [0, 80]]},
+                        'Z':{0:[[0, 80], [-40, 40], [0, 0], [-40, -40]],
+                             1:[[80, -40], [40, 0], [0, -40], [-40, 0]],
+                             2:[[-40, -40], [0, 0], [-40, 40], [0, 80]],
+                             3:[[-40, 0], [0, -40], [40, 0], [80, -40]]},
+                        'S':{0:[[0, 40], [-40, 0], [80, 40], [40, 0]],  
+                             1:[[0, 0], [-40, 40], [0, -80], [-40, -40]],
+                             2:[[40, 0], [80, 40], [-40, 0], [0, 40]],
+                             3:[[-40, -40], [0, -80], [-40, 40], [0, 0]]},
+                        'I':{0:[[40, 120], [0, 80], [-40, 40], [-80, 0]],
+                             1:[[80, -120], [40, -80], [0, -40], [-40, 0]],
+                             2:[[-80, 0], [-40, 40], [0, 80], [40, 120]],
+                             3:[[-40, 0], [0, -40], [40, -80], [80, -120]]},
+                        'T':{0:[[0, 80], [-40, 40], [-80, 0], [0, 0]],
+                             1:[[80, 0], [40, 40], [0, 80], [0, 0]],
+                             2:[[0, -80], [40, -40], [80, 0], [0, 0]],
+                             3:[[-80, 0], [-40, -40], [0, -80], [0, 0]]},
+                        'O':{0:[[0, 0], [0, 0], [0, 0], [0, 0]]}
                  }
                        
         self.speed = self.levels[self.level]
         
-    def new_block(self):
-        self.block = random.choice(self.block_types.keys())
+    def new_block(self, block):
+        self.block = block 
         position_range = xrange(self.block_types[self.block][1])
         self.positions = itertools.cycle(position_range)
         self.cur_pos = self.positions.next()
@@ -377,11 +377,17 @@ class Tetris(object):
            
 def main():
     cur_brd = list()
+    cur_bag = list()
+    tetri = ['L', 'J', 'Z', 'S', 'I', 'T', 'O']
+    tetri_bags = list(itertools.permutations(tetri))
     game = GameScreen()
     while True:
         level = int(game.level)
         tetris = Tetris(level)
-        tetris.new_block()
+        if not cur_bag:
+            cur_bag = list(random.choice(tetri_bags))
+        cur_block = cur_bag.pop(0)
+        tetris.new_block(cur_block)
         while all(tetris.blocks[i].bottom < 740 for i in tetris.blocks):
             game.update_block(tetris.blocks, cur_brd)
             tetris.overflow_check(cur_brd)
