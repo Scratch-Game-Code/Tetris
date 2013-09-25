@@ -316,14 +316,22 @@ class Tetris(object):
         create_block = self.block_types[self.block][0]
         self.blocks = create_block()
 
-    def rotate_block(self):
+    def rotate_block(self, board):
         shift_amnt = self.shifts[self.block]
         idx = 0
+        save_block_pos = collections.OrderedDict()
+        for surface in self.blocks:
+            save_block_pos[surface] = self.blocks[surface].copy()
         for blk in self.blocks:
             self.blocks[blk][0] += shift_amnt[self.cur_pos][idx][0]
             self.blocks[blk][1] += shift_amnt[self.cur_pos][idx][1]
-            idx += 1         
-        self.cur_pos = self.positions.next()  
+            idx += 1
+        if not (self.clear_on_left(board) and 
+                self.clear_on_right(board) and 
+                self.clear_on_bottom(board)):
+            self.blocks = save_block_pos         
+        else:
+            self.cur_pos = self.positions.next()  
         
     def shift_right(self):
         shift = max(self.blocks[i].right for i in self.blocks)
@@ -373,6 +381,19 @@ class Tetris(object):
                        for i in self.blocks):
                     return False
         return True
+
+    def clear_on_bottom(self, board):
+        for node in board:
+            for blk in node:
+                if any(self.blocks[i].right == node[blk].right and
+                       self.blocks[i].top >= node[blk].top and
+                       self.blocks[i].top < node[blk].bottom or
+                       self.blocks[i].right == node[blk].right and
+                       self.blocks[i].bottom > node[blk].top and
+                       self.blocks[i].bottom <= node[blk].bottom
+                       for i in self.blocks):
+                    return False
+        return True
         
            
 def main():
@@ -394,8 +415,7 @@ def main():
             for event in pygame.event.get():
                 if (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LSHIFT):
-                    # check here or in rotate_blocks for collision with other piece or bottom
-                    tetris.rotate_block()
+                    tetris.rotate_block(cur_brd)
                     if any(tetris.blocks[i].right > 520 for i in tetris.blocks):
                         tetris.shift_right()
                     if any(tetris.blocks[i].left < 40 for i in tetris.blocks):
