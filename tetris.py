@@ -328,7 +328,8 @@ class Tetris(object):
             idx += 1
         if not (self.clear_on_left(board) and 
                 self.clear_on_right(board) and 
-                self.clear_on_bottom(board)):
+                self.clear_on_bottom(board) and
+                all(self.blocks[i].bottom <= 740 for i in self.blocks)):
             self.blocks = save_block_pos         
         else:
             self.cur_pos = self.positions.next()  
@@ -390,7 +391,7 @@ class Tetris(object):
                        self.blocks[i].top < node[blk].bottom or
                        self.blocks[i].right == node[blk].right and
                        self.blocks[i].bottom > node[blk].top and
-                       self.blocks[i].bottom <= node[blk].bottom
+                       self.blocks[i].bottom <= node[blk].bottom   
                        for i in self.blocks):
                     return False
         return True
