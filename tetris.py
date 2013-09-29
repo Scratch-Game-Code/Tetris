@@ -146,6 +146,14 @@ def row_check(board):
         row_count[node[surface][1]] += 1
     complete_row = [i for i in row_count if row_count[i] == 12]      
     return complete_row
+    
+def set_down_speed(blocks):
+    for block in blocks:
+        diff = blocks[block].bottom % 10
+        break
+    for block in blocks:
+        blocks[block].bottom -= diff
+    return
 
 class GameScreen(object):
     
@@ -416,11 +424,7 @@ def main():
             for event in pygame.event.get():
                 if (event.type == pygame.KEYDOWN and
                     event.key == pygame.K_DOWN):
-                    for b in tetris.blocks:
-                        diff = tetris.blocks[b].bottom % 10
-                        break
-                    for b in tetris.blocks:
-                        tetris.blocks[b].bottom -= diff
+                    set_down_speed(tetris.blocks)
                     default_speed = tetris.speed[1]
                     tetris.speed[1] = 10
                 if (event.type == pygame.KEYUP and
