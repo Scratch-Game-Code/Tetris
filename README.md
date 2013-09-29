@@ -15,3 +15,6 @@ move block:
 
     right_arrow
 
+speed up block:
+
+    hold down_arrow
