@@ -414,6 +414,18 @@ def main():
             game.update_block(tetris.blocks, cur_brd)
             tetris.overflow_check(cur_brd)
             for event in pygame.event.get():
+                if (event.type == pygame.KEYDOWN and
+                    event.key == pygame.K_DOWN):
+                    for b in tetris.blocks:
+                        diff = tetris.blocks[b].bottom % 10
+                        break
+                    for b in tetris.blocks:
+                        tetris.blocks[b].bottom -= diff
+                    default_speed = tetris.speed[1]
+                    tetris.speed[1] = 10
+                if (event.type == pygame.KEYUP and
+                    event.key == pygame.K_DOWN):
+                    tetris.speed[1] = default_speed
                 if (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LSHIFT):
                     tetris.rotate_block(cur_brd)
