@@ -149,7 +149,7 @@ def row_check(board):
     
 def set_down_speed(blocks):
     position_blk = blocks.keys()[0]
-    diff = position_blk.bottom % 10
+    diff = blocks[position_blk].bottom % 10
     for block in blocks:
         blocks[block].bottom -= diff
     return
