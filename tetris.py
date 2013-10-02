@@ -344,12 +344,12 @@ class Tetris(object):
     def lateral_clearance(self, cur_brd):
         if not self.clear_on_right(cur_brd) and self.speed[0] > 0: 
             self.speed[0] -= 40                
-        if not self.clear_on_left(cur_brd) and self.speed[0] < 0:
+        elif not self.clear_on_left(cur_brd) and self.speed[0] < 0:
             self.speed[0] += 40 
         if (self.speed[0] < 0 and 
             any(self.blocks[i].left == 40 for i in self.blocks)):
             self.speed[0] += 40
-        if (self.speed[0] > 0 and 
+        elif (self.speed[0] > 0 and 
             any(self.blocks[i].right == 520 for i in self.blocks)):
             self.speed[0] -= 40  
         return
