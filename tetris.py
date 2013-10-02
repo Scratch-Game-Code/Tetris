@@ -339,7 +339,20 @@ class Tetris(object):
                 all(self.blocks[i].bottom <= 740 for i in self.blocks)):
             self.blocks = save_block_pos         
         else:
-            self.cur_pos = self.positions.next()  
+            self.cur_pos = self.positions.next()
+
+    def lateral_clearance(self, cur_brd):
+        if not self.clear_on_right(cur_brd) and self.speed[0] > 0: 
+            self.speed[0] -= 40                
+        if not self.clear_on_left(cur_brd) and self.speed[0] < 0:
+            self.speed[0] += 40 
+        if (self.speed[0] < 0 and 
+            any(self.blocks[i].left == 40 for i in self.blocks)):
+            self.speed[0] += 40
+        if (self.speed[0] > 0 and 
+            any(self.blocks[i].right == 520 for i in self.blocks)):
+            self.speed[0] -= 40  
+        return
         
     def shift_right(self):
         shift = max(self.blocks[i].right for i in self.blocks)
@@ -436,7 +449,6 @@ def main():
                         tetris.shift_right()
                     if any(tetris.blocks[i].left < 40 for i in tetris.blocks):
                         tetris.shift_left()
-
                 if (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_RIGHT and 
                     all(tetris.blocks[i].right < 520 for i in tetris.blocks) and
@@ -458,15 +470,7 @@ def main():
                     game.font_file.close()
                     sys.exit()
             if tetris.speed[1]:
-                if not (tetris.clear_on_right(cur_brd) and 
-                        tetris.clear_on_left(cur_brd)): 
-                    tetris.speed[0] = 0                
-                if (tetris.speed[0] < 0 and 
-                    any(tetris.blocks[i].left == 40 for i in tetris.blocks)):
-                    tetris.speed[0] += 40
-                if (tetris.speed[0] > 0 and 
-                    any(tetris.blocks[i].right == 520 for i in tetris.blocks)):
-                    tetris.speed[0] -= 40
+                tetris.lateral_clearance(cur_brd)
                 for i in tetris.blocks:
                     tetris.blocks[i].move_ip(tetris.speed)
             else:
