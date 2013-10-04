@@ -9,6 +9,8 @@ import itertools
 import collections 
 
 
+os.environ['SDL_VIDEO_WINDOW_POS'] = '300, 30'
+
 def create_L():
     blocks = collections.OrderedDict() 
     coords = [240, 0]
@@ -238,7 +240,7 @@ class GameScreen(object):
             else:
                 new_brd.append(node)
         pygame.display.flip()
-        board = new_brd
+        board = new_brd[:]
         time.sleep(0.1)
         displaced = list()
         for node in board:
@@ -249,7 +251,7 @@ class GameScreen(object):
             self.screen.blit(self.brd, (40, 20))
             for blk in displaced:            
                 blk.move_ip([0, 2.0]) 
-            self.update_board(board)
+            self.update_board(board) 
             for node in board:
                 surface = node.keys()[0]
                 if any(blk.left == node[surface].left and
@@ -341,6 +343,14 @@ class Tetris(object):
         else:
             self.cur_pos = self.positions.next()
 
+    def vertical_clearance(self, cur_brd):
+        for node in cur_brd:
+            for blk in node:
+                if any(self.blocks[v].bottom + self.speed[1] > node[blk].top for v in self.blocks):
+                    self.speed[1] = self.levels[self.level][1]
+                    return
+        return
+
     def lateral_clearance(self, cur_brd):
         if not self.clear_on_right(cur_brd) and self.speed[0] > 0: 
             self.speed[0] -= 40                
@@ -377,7 +387,7 @@ class Tetris(object):
                             self.gameover = True
                     self.speed = [0, 0]
 
-    def clear_on_left(self, board):
+    def clear_on_left(self, board): 
         for node in board:
             for blk in node:                
                 if any(self.blocks[i].left == node[blk].right and
@@ -407,11 +417,11 @@ class Tetris(object):
         for node in board:
             for blk in node:
                 if any(self.blocks[i].right == node[blk].right and
-                       self.blocks[i].top >= node[blk].top and
+                       self.blocks[i].top > node[blk].top and
                        self.blocks[i].top < node[blk].bottom or
                        self.blocks[i].right == node[blk].right and
                        self.blocks[i].bottom > node[blk].top and
-                       self.blocks[i].bottom <= node[blk].bottom   
+                       self.blocks[i].bottom < node[blk].bottom   
                        for i in self.blocks):
                     return False
         return True
@@ -471,6 +481,7 @@ def main():
                     sys.exit()
             if tetris.speed[1]:
                 tetris.lateral_clearance(cur_brd)
+                tetris.vertical_clearance(cur_brd)
                 for i in tetris.blocks:
                     tetris.blocks[i].move_ip(tetris.speed)
             else:
