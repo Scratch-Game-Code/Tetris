@@ -268,7 +268,9 @@ class GameScreen(object):
                     dpl[blk].left == node[surface].left and
                     dpl[blk].bottom == node[surface].top and
                     surface in stop_blk):
-                    stop_blk[blk] = dpl[blk]
+                    for stop in dpl:
+                        if dpl[stop].bottom == dpl[blk].bottom:
+                            stop_blk[stop] = dpl[stop]
         for blk in stop_blk:
             del dpl[blk]
         return dpl
