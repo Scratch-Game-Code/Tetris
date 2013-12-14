@@ -299,8 +299,7 @@ class Tetris(object):
                             'T':[create_T, 4], 
                             'O':[create_O, 1]} 
                             
-        self.levels = {1:[0, 2.0], 2:[0, 2.0], 3:[0, 2.5], 
-                       4:[0, 4.0], 5:[0, 5.0], 6:[0, 10.0]}
+        self.levels = {1:0.1, 2:0.08, 3:0.06, 4:0.04, 5:0.02, 6:0.001}
 
         self.shifts =  {'L':{0:[[0, 40], [-40, 0], [0, -40], [40, -80]],  
                              1:[[40, 40], [0, 80], [-40, 40], [-80, 0]], 
@@ -329,7 +328,8 @@ class Tetris(object):
                         'O':{0:[[0, 0], [0, 0], [0, 0], [0, 0]]}
                  }
                        
-        self.speed = self.levels[self.level]
+        self.speed = [0, 10]
+        self.level = self.levels[self.level] 
         
     def new_block(self, block):
         self.block = block 
@@ -362,7 +362,7 @@ class Tetris(object):
             for blk in node:
                 if any(self.blocks[v].bottom + self.speed[1] > node[blk].top 
                        for v in self.blocks):
-                    self.speed[1] = self.levels[self.level][1]
+                    self.speed[1] = 10 
                     return
         return
 
@@ -457,6 +457,7 @@ def main():
         tetris.new_block(cur_block)
         default_speed = tetris.speed[1]
         while all(tetris.blocks[i].bottom < 740 for i in tetris.blocks):
+            time.sleep(tetris.level)
             game.update_block(tetris.blocks, cur_brd)
             tetris.overflow_check(cur_brd)
             for event in pygame.event.get():
