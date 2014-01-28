@@ -464,33 +464,33 @@ def main():
                     event.key == pygame.K_DOWN):
                     set_down_speed(tetris.blocks)
                     tetris.level /= 2
-                if (event.type == pygame.KEYUP and
+                elif (event.type == pygame.KEYUP and
                     event.key == pygame.K_DOWN):
                     tetris.level *= 2
-                if (event.type == pygame.KEYDOWN and 
+                elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LSHIFT):
                     tetris.rotate_block(cur_brd)
                     if any(tetris.blocks[i].right > 520 for i in tetris.blocks):
                         tetris.shift_right()
                     if any(tetris.blocks[i].left < 40 for i in tetris.blocks):
                         tetris.shift_left()
-                if (event.type == pygame.KEYDOWN and 
+                elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_RIGHT and 
                     all(tetris.blocks[i].right < 520 for i in tetris.blocks) and
                     tetris.clear_on_right(cur_brd)):
                     tetris.speed[0] = 40
-                if (event.type == pygame.KEYUP and
+                elif (event.type == pygame.KEYUP and
                     event.key == pygame.K_RIGHT):
                     tetris.speed[0] = 0
-                if (event.type == pygame.KEYDOWN and 
+                elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LEFT and 
                     all(tetris.blocks[i].left > 40 for i in tetris.blocks) and
                     tetris.clear_on_left(cur_brd)):
                     tetris.speed[0] = -40
-                if (event.type == pygame.KEYUP and
+                elif (event.type == pygame.KEYUP and
                     event.key == pygame.K_LEFT):
                     tetris.speed[0] = 0
-                if (event.type == pygame.KEYDOWN and 
+                elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_ESCAPE):
                     game.font_file.close()
                     sys.exit()
