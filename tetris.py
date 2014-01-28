@@ -286,6 +286,7 @@ class GameScreen(object):
                         sys.exit()
             pygame.display.flip()
 
+
 class Tetris(object):
 
     def __init__(self, level):
@@ -502,8 +503,7 @@ def main():
                     tetris.blocks[i].move_ip(tetris.speed)
             else:
                 break
-        for blk in tetris.blocks:
-            cur_brd.append({blk:tetris.blocks[blk]})
+        cur_brd.extend([{blk:tetris.blocks[blk]} for blk in tetris.blocks])
         rows = row_check(cur_brd)        
         if rows:
             cur_brd = game.complete_line(rows, cur_brd)
