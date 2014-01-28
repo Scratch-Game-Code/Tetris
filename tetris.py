@@ -455,7 +455,6 @@ def main():
             cur_bag = list(random.choice(tetri_bags))
         cur_block = cur_bag.pop(0)
         tetris.new_block(cur_block)
-        default_speed = tetris.speed[1]
         while all(tetris.blocks[i].bottom < 740 for i in tetris.blocks):
             time.sleep(tetris.level)
             game.update_block(tetris.blocks, cur_brd)
@@ -464,10 +463,10 @@ def main():
                 if (event.type == pygame.KEYDOWN and
                     event.key == pygame.K_DOWN):
                     set_down_speed(tetris.blocks)
-                    tetris.speed[1] = 10
+                    tetris.level /= 2
                 if (event.type == pygame.KEYUP and
                     event.key == pygame.K_DOWN):
-                    tetris.speed[1] = default_speed
+                    tetris.level *= 2
                 if (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LSHIFT):
                     tetris.rotate_block(cur_brd)
