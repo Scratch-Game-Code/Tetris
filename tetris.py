@@ -287,7 +287,7 @@ class GameScreen(object):
             pygame.display.flip()
 
 
-class Tetris(object):
+class Tetri(object):
 
     def __init__(self, level):
         self.level = level
@@ -446,68 +446,68 @@ class Tetris(object):
 def main():
     cur_brd = list()
     cur_bag = list()
-    tetri = ['L', 'J', 'Z', 'S', 'I', 'T', 'O']
-    tetri_bags = list(itertools.permutations(tetri))
+    tetri_types = ['L', 'J', 'Z', 'S', 'I', 'T', 'O']
+    tetri_bags = list(itertools.permutations(tetri_types))
     game = GameScreen()
     while True:
         level = int(game.level)
-        tetris = Tetris(level)
+        tetri = Tetri(level)
         if not cur_bag:
             cur_bag = list(random.choice(tetri_bags))
         cur_block = cur_bag.pop(0)
-        tetris.new_block(cur_block)
-        while all(tetris.blocks[i].bottom < 740 for i in tetris.blocks):
-            time.sleep(tetris.level)
-            game.update_block(tetris.blocks, cur_brd)
-            tetris.overflow_check(cur_brd)
+        tetri.new_block(cur_block)
+        while all(tetri.blocks[i].bottom < 740 for i in tetri.blocks):
+            time.sleep(tetri.level)
+            game.update_block(tetri.blocks, cur_brd)
+            tetri.overflow_check(cur_brd)
             for event in pygame.event.get():
                 if (event.type == pygame.KEYDOWN and
                     event.key == pygame.K_DOWN):
-                    set_down_speed(tetris.blocks)
-                    tetris.level /= 2
+                    set_down_speed(tetri.blocks)
+                    tetri.level /= 2
                 elif (event.type == pygame.KEYUP and
                     event.key == pygame.K_DOWN):
-                    tetris.level *= 2
+                    tetri.level *= 2
                 elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LSHIFT):
-                    tetris.rotate_block(cur_brd)
-                    if any(tetris.blocks[i].right > 520 for i in tetris.blocks):
-                        tetris.shift_right()
-                    if any(tetris.blocks[i].left < 40 for i in tetris.blocks):
-                        tetris.shift_left()
+                    tetri.rotate_block(cur_brd)
+                    if any(tetri.blocks[i].right > 520 for i in tetri.blocks):
+                        tetri.shift_right()
+                    if any(tetri.blocks[i].left < 40 for i in tetri.blocks):
+                        tetri.shift_left()
                 elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_RIGHT and 
-                    all(tetris.blocks[i].right < 520 for i in tetris.blocks) and
-                    tetris.clear_on_right(cur_brd)):
-                    tetris.speed[0] = 40
+                    all(tetri.blocks[i].right < 520 for i in tetri.blocks) and
+                    tetri.clear_on_right(cur_brd)):
+                    tetri.speed[0] = 40
                 elif (event.type == pygame.KEYUP and
                     event.key == pygame.K_RIGHT):
-                    tetris.speed[0] = 0
+                    tetri.speed[0] = 0
                 elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_LEFT and 
-                    all(tetris.blocks[i].left > 40 for i in tetris.blocks) and
-                    tetris.clear_on_left(cur_brd)):
-                    tetris.speed[0] = -40
+                    all(tetri.blocks[i].left > 40 for i in tetri.blocks) and
+                    tetri.clear_on_left(cur_brd)):
+                    tetri.speed[0] = -40
                 elif (event.type == pygame.KEYUP and
                     event.key == pygame.K_LEFT):
-                    tetris.speed[0] = 0
+                    tetri.speed[0] = 0
                 elif (event.type == pygame.KEYDOWN and 
                     event.key == pygame.K_ESCAPE):
                     game.font_file.close()
                     sys.exit()
-            if tetris.speed[1]:
-                tetris.lateral_clearance(cur_brd)
-                if tetris.speed[1] == 10:
-                    tetris.vertical_clearance(cur_brd)
-                for i in tetris.blocks:
-                    tetris.blocks[i].move_ip(tetris.speed)
+            if tetri.speed[1]:
+                tetri.lateral_clearance(cur_brd)
+                if tetri.speed[1] == 10:
+                    tetri.vertical_clearance(cur_brd)
+                for i in tetri.blocks:
+                    tetri.blocks[i].move_ip(tetri.speed)
             else:
                 break
-        cur_brd.extend([{blk:tetris.blocks[blk]} for blk in tetris.blocks])
+        cur_brd.extend([{blk:tetri.blocks[blk]} for blk in tetri.blocks])
         rows = row_check(cur_brd)        
         if rows:
             cur_brd = game.complete_line(rows, cur_brd)
-        if tetris.gameover:
+        if tetri.gameover:
             game.over
 
 
