@@ -3,7 +3,7 @@ Tetris
 
 A classic tetris game.
 
-####usage:
+#### usage:
 
 rotate block:
 
