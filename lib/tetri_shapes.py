@@ -11,7 +11,7 @@ PATH = os.getcwd()
 def create_L():
     blocks = collections.OrderedDict()
     coords = [240, 0]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/orange_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -19,7 +19,7 @@ def create_L():
         blocks[block] = block_rect
         coords[0] += 40
     coords = [280, 40]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/orange_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -31,7 +31,7 @@ def create_L():
 def create_J():
     blocks = collections.OrderedDict()
     coords = [280, 0]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/blue_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -39,7 +39,7 @@ def create_J():
         blocks[block] = block_rect
         coords[0] -= 40
     coords = [240, 40]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/blue_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -51,7 +51,7 @@ def create_J():
 def create_Z():
     blocks = collections.OrderedDict()
     coords = [240, 0]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/red_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -59,7 +59,7 @@ def create_Z():
         blocks[block] = block_rect
         coords[0] += 40
     coords = [280, 40]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/red_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -71,7 +71,7 @@ def create_Z():
 def create_S():
     blocks = collections.OrderedDict()
     coords = [240, 0]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/green_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -79,7 +79,7 @@ def create_S():
         blocks[block] = block_rect
         coords[0] += 40
     coords = [200, 40]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/green_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -91,7 +91,7 @@ def create_S():
 def create_I():
     blocks = collections.OrderedDict()
     coords = [200, 0]
-    for i in xrange(4):
+    for i in range(4):
         block = pygame.image.load(PATH + '/images/aqua_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -103,7 +103,7 @@ def create_I():
 def create_T():
     blocks = collections.OrderedDict()
     coords = [240, 0]
-    for i in xrange(3):
+    for i in range(3):
         block = pygame.image.load(PATH + '/images/purple_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -121,7 +121,7 @@ def create_T():
 def create_O():
     blocks = collections.OrderedDict()
     coords = [240, 0]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/yellow_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()
@@ -129,7 +129,7 @@ def create_O():
         blocks[block] = block_rect
         coords[0] += 40
     coords = [240, 40]
-    for i in xrange(2):
+    for i in range(2):
         block = pygame.image.load(PATH + '/images/yellow_block.png')
         block.convert_alpha()
         block_rect = block.get_rect()

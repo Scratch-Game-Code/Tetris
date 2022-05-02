@@ -1,16 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
-import pygame
-import sys
-import os
-import time
-import random
-import itertools
 import collections 
+import itertools
+import os
+import platform
+import pygame
+import random
+import sys
+import time
 
 from lib.tetri_shapes import *
 from lib.game_screen import GameScreen
 
+if platform.system() == 'Windows':
+    os.environ['SDL_VIDEODRIVER'] = 'windib'
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = '300, 30'
 
@@ -61,9 +64,9 @@ class Tetri(object):
         
     def new_block(self, block):
         self.block = block 
-        position_range = xrange(self.block_types[self.block][1])
+        position_range = range(self.block_types[self.block][1])
         self.positions = itertools.cycle(position_range)
-        self.cur_pos = self.positions.next()
+        self.cur_pos = next(self.positions)
         create_block = self.block_types[self.block][0]
         self.blocks = create_block()
 
@@ -83,7 +86,7 @@ class Tetri(object):
                 all(self.blocks[i].bottom <= 740 for i in self.blocks)):
             self.blocks = save_block_pos         
         else:
-            self.cur_pos = self.positions.next()
+            self.cur_pos = next(self.positions)
 
     def vertical_clearance(self, cur_brd):
         for node in cur_brd:
@@ -173,13 +176,13 @@ class Tetri(object):
 def row_check(board):
     row_count = collections.Counter()
     for node in board:
-        surface = node.keys()[0]
+        surface = list(node.keys())[0]
         row_count[node[surface][1]] += 1
     complete_row = [i for i in row_count if row_count[i] == 12]      
     return complete_row
     
 def set_down_speed(blocks):
-    position_blk = blocks.keys()[0]
+    position_blk = list(blocks.keys())[0]
     diff = blocks[position_blk].bottom % 10
     for block in blocks:
         blocks[block].bottom -= diff
