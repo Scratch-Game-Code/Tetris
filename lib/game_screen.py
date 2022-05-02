@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #-*- coding: utf-8 -*-
 
 import pygame
@@ -56,7 +56,7 @@ class GameScreen(object):
     
     def update_board(self, board):
         for node in board:
-            surface = node.keys()[0]
+            surface = list(node.keys())[0]
             self.screen.blit(surface, node[surface])
         
     def update_score(self, line_amnt):
@@ -86,7 +86,7 @@ class GameScreen(object):
         self.update_score(len(line_amnt))
         new_brd = list()
         for node in board:
-            surface = node.keys()[0]
+            surface = list(node.keys())[0]
             if any(node[surface][1] == i for i in line_amnt):
                 self.screen.blit(self.clear_block, node[surface][:2])
             else:
@@ -96,7 +96,7 @@ class GameScreen(object):
         time.sleep(0.1)
         displaced = dict()
         for node in board:
-            surface = node.keys()[0]
+            surface = list(node.keys())[0]
             if node[surface][1] < max(line_amnt):
                 displaced[surface] = node[surface]
         while displaced:
@@ -111,7 +111,7 @@ class GameScreen(object):
     def displace_blocks(self, dpl, board):
         stop_blk = dict()
         for node in board:
-            surface = node.keys()[0]
+            surface = list(node.keys())[0]
             for blk in dpl:
                 if (dpl[blk].bottom >= 740 or
                     dpl[blk].left == node[surface].left and
