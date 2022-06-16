@@ -236,8 +236,8 @@ def main():
                 elif (event.type == pygame.KEYUP and
                     event.key == pygame.K_LEFT):
                     tetri.speed[0] = 0
-                elif (event.type == pygame.KEYDOWN and 
-                    event.key == pygame.K_ESCAPE):
+                elif ((event.type == pygame.KEYDOWN and 
+                       event.key == pygame.K_ESCAPE) or event.type == pygame.QUIT):
                     game.font_file.close()
                     sys.exit()
             if tetri.speed[1]:
